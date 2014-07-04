@@ -1,0 +1,72 @@
+# Custom HAL commands here
+#  a lot of this stuff is dependent on the pin commands that
+#  come from the custom firmware firmware=hm2/5i20/SVST8_4_72_SPC.BIT
+#
+# Set up PWM generation  
+setp hm2_5i20.0.gpio.024.is_opendrain true
+setp hm2_5i20.0.gpio.024.invert_output TRUE
+setp hm2_5i20.0.pwmgen.00.enable TRUE
+setp hm2_5i20.0.pwmgen.00.output-type 1
+setp hm2_5i20.0.pwmgen.00.scale 100 
+
+# Set up laser
+setp hm2_5i20.0.gpio.025.is_opendrain true
+setp hm2_5i20.0.gpio.025.is_output TRUE
+setp hm2_5i20.0.gpio.025.invert_output TRUE
+
+# these are stepgens but still set them to...
+setp hm2_5i20.0.gpio.026.is_opendrain true
+setp hm2_5i20.0.gpio.027.is_opendrain true
+setp hm2_5i20.0.gpio.028.is_opendrain true
+setp hm2_5i20.0.gpio.029.is_opendrain true
+setp hm2_5i20.0.gpio.030.is_opendrain true
+setp hm2_5i20.0.gpio.031.is_opendrain true
+
+# set these the pins that go to the DB-25 port to run appliances
+setp hm2_5i20.0.gpio.032.is_output true
+setp hm2_5i20.0.gpio.032.is_opendrain true
+setp hm2_5i20.0.gpio.032.invert_output true
+setp hm2_5i20.0.gpio.033.is_output true
+setp hm2_5i20.0.gpio.033.is_opendrain true
+setp hm2_5i20.0.gpio.033.invert_output true
+setp hm2_5i20.0.gpio.034.is_output true
+setp hm2_5i20.0.gpio.034.is_opendrain true
+setp hm2_5i20.0.gpio.034.invert_output true
+setp hm2_5i20.0.gpio.035.is_output true
+setp hm2_5i20.0.gpio.035.is_opendrain true
+setp hm2_5i20.0.gpio.035.invert_output true
+setp hm2_5i20.0.gpio.036.is_output true
+setp hm2_5i20.0.gpio.036.is_opendrain true
+setp hm2_5i20.0.gpio.036.invert_output true
+setp hm2_5i20.0.gpio.037.is_output true
+setp hm2_5i20.0.gpio.037.is_opendrain true
+setp hm2_5i20.0.gpio.037.invert_output true
+setp hm2_5i20.0.gpio.038.is_output true
+setp hm2_5i20.0.gpio.038.is_opendrain true
+setp hm2_5i20.0.gpio.038.invert_output true
+setp hm2_5i20.0.gpio.039.is_output true
+setp hm2_5i20.0.gpio.039.is_opendrain true
+setp hm2_5i20.0.gpio.039.invert_output true
+
+# drive this low to safely turn some channels on the custom pcb to on
+# setp hm2_5i20.0.gpio.040.is_output true
+# setp hm2_5i20.0.gpio.040.out false
+setp hm2_5i20.0.gpio.042.is_output true
+setp hm2_5i20.0.gpio.042.out false
+
+# inputs
+#
+setp hm2_5i20.0.gpio.000.is_output false # limX_h
+setp hm2_5i20.0.gpio.001.is_output false # limX_-
+setp hm2_5i20.0.gpio.002.is_output false # limX_+
+setp hm2_5i20.0.gpio.003.is_output false # limY_h
+setp hm2_5i20.0.gpio.004.is_output false # limY_-
+setp hm2_5i20.0.gpio.005.is_output false # limY_+
+setp hm2_5i20.0.gpio.006.is_output false # limZ_h
+setp hm2_5i20.0.gpio.007.is_output false # limZ_-
+setp hm2_5i20.0.gpio.008.is_output false # limZ_+
+setp hm2_5i20.0.gpio.009.is_output false # duty_cycle
+setp hm2_5i20.0.gpio.010.is_output false # vswr
+setp hm2_5i20.0.gpio.011.is_output false # digital_forward
+setp hm2_5i20.0.gpio.012.is_output false # digital_reflected
+setp hm2_5i20.0.gpio.013.is_output false # over_temp
