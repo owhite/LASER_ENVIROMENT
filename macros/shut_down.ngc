@@ -1,0 +1,14 @@
+O<shut_down> sub
+G17
+G20
+G40
+G49
+G80
+G90
+
+M65 P00
+M65 P01
+M65 P03
+
+O<shut_down> endsub
+M2

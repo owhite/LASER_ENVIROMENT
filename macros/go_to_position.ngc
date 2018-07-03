@@ -1,0 +1,16 @@
+O<go_to_position> sub
+G17
+G20
+G40
+G49
+G80
+G90
+
+(MSG ting thing)
+; #1 = <X-Pos>
+; #2 = <Y-Pos>
+
+(DBG, Will now move machine to X = #1 , Y = #2)
+G0 X #1 Y #2
+O<go_to_position> endsub
+M2

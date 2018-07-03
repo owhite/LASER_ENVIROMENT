@@ -1,0 +1,12 @@
+O<set_zero> sub
+G17
+G20
+G40
+G49
+G80
+G90
+
+G92 X0 Y0 Z0
+(MSG, x = 0, y = 0)
+O<set_zero> endsub
+M2

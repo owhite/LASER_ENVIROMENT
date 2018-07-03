@@ -1,0 +1,15 @@
+O<go_to_position> sub
+G17
+G20
+G40
+G49
+G80
+G90
+
+; #1 = <X-Pos>
+; #2 = <Y-Pos>
+
+(DBG, Will now move machine to X = #1 , Y = #2)
+G0 X 0.0 Y 0.0
+O<go_to_position> endsub
+M2
