@@ -1,12 +1,5 @@
 loadusr -W laser_power 1
 
-loadrt or2 count=5
-addf or2.0 servo-thread
-addf or2.1 servo-thread
-addf or2.2 servo-thread
-addf or2.3 servo-thread
-addf or2.4 servo-thread
-
 loadrt oneshot count=1
 addf oneshot.0 servo-thread 
 
@@ -16,41 +9,38 @@ addf oneshot.0 servo-thread
 ##############################
 # appliance settings
 
-# this is used to make sure a bunch of commands only execut when the machine is running
-net machine-is-on halui.machine.is-on and2.1.in0 and2.2.in0 and2.3.in0 and2.4.in0
+# this is used to make sure a bunch of commands 
+#  only execut when the machine is running
+net machine-is-on halui.machine.is-on and2.0.in0 and2.1.in0 and2.2.in0
 
 ######
 # motors power supply
-net motors.is-on appliances.btn_motor_ps hm2_5i20.0.led.CR08 appliances.motor_ps.is-on hm2_5i20.0.gpio.035.out
+net motors.is-on appliances.btn_motor_ps hm2_5i20.0.led.CR08 appliances.motor_ps.is-on appliance_control.appliance_05
 
 # chiller
-net chiller.is-on appliances.btn_chiller hm2_5i20.0.led.CR07 appliances.chiller.is-on hm2_5i20.0.gpio.036.out and2.5.in0
+net chiller.is-on appliances.btn_chiller hm2_5i20.0.led.CR07 appliances.chiller.is-on appliance_control.appliance_01 and2.3.in0
 
-# that last and2, makes sure chiller has to be on to start the power supply
 
 # laser power supply
-net a5 and2.5.in1 appliances.btn_laser_ps
-net laser_ps.is-on and2.5.out hm2_5i20.0.led.CR06 appliances.laser_ps.is-on hm2_5i20.0.gpio.037.out
+net a5 and2.3.in1 appliances.btn_laser_ps
+net laser_ps.is-on and2.3.out hm2_5i20.0.led.CR06 appliances.laser_ps.is-on appliance_control.appliance_07
+
+# this should be air pump:
+net airpump.airpump.is-on appliances.btn_airpump hm2_5i20.0.led.CR03 appliances.airpump.is-on appliance_control.appliance_02
 
 # ventilation
 # turn on with M64 P00
-net and2_1b              motion.digital-out-00      and2.1.in1
-net or2_0a               and2.1.out                 or2.0.in0
+net and2_1b              motion.digital-out-00      and2.0.in1
+net or2_0a               and2.0.out                 or2.0.in0
 net or2_0b               appliances.btn_ventilation     or2.0.in1
-net vent.is-on or2.0.out hm2_5i20.0.led.CR05 appliances.ventilation.is-on hm2_5i20.0.gpio.033.out
+net vent.is-on or2.0.out hm2_5i20.0.led.CR05 appliances.ventilation.is-on appliance_control.appliance_04
 
 # gas assist valve
 # turn on with M64 P01
-net and2_2b              motion.digital-out-01      and2.2.in1
-net or2_1a               and2.2.out                 or2.1.in0
+net and2_2b              motion.digital-out-01      and2.1.in1
+net or2_1a               and2.1.out                 or2.1.in0
 net or2_1b               appliances.btn_gas         or2.1.in1
-net gas.is-on or2.1.out hm2_5i20.0.led.CR04 appliances.gas.is-on hm2_5i20.0.gpio.038.out
-
-# air compressor
-net and2_3b              motion.digital-out-02      and2.3.in1
-net or2_2a               and2.3.out                 or2.2.in0
-net or2_2b               appliances.btn_air         or2.2.in1
-net air.is-on or2.2.out hm2_5i20.0.led.CR03 appliances.air.is-on hm2_5i20.0.gpio.034.out
+net gas.is-on or2.1.out hm2_5i20.0.led.CR04 appliances.gas.is-on appliance_control.appliance_03
 
 ##############################
 # laser stuff
@@ -69,14 +59,20 @@ net or2_3b         oneshot.0.out               or2.3.in1
 #  (e.g., M64 P03 command)
 #  in that case we also check to make sure the machine is running 
 #  (see: net machine-is-on above)
-net and2_4b            motion.digital-out-03         and2.4.in1
+net and2_4b            motion.digital-out-03         and2.2.in1
 
 # so if the machine/M64 command is on, or if the appliances.laser_on* are on...
-net or2_4a             and2.4.out                    or2.4.in0
+net or2_4a             and2.2.out                    or2.4.in0
 net or2_4b             or2.3.out                     or2.4.in1
 
 # fire it up
 net laser.is-on or2.4.out hm2_5i20.0.led.CR01 hm2_5i20.0.gpio.025.out
+
+# this ties the interface to the optics detector. 
+#  button state changes are passed to the movement detector
+#  see also /usr/bin/optics_movement
+net a3 appliances.squeal_button optics_movement.optics-silence-flag 
+
 
 
 

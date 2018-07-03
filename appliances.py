@@ -4,7 +4,7 @@ import hal_glib
 import glib
 import hal                                
 import time
-import re, os
+import re, os, time
 import ConfigParser
 from gladevcp.persistence import IniFile  
 
@@ -34,6 +34,10 @@ class LaserClass:
         self.btn_chiller_pressed = self.builder.get_object("btn_chiller")
         self.btn_chiller_pressed.connect("pressed", self.on_btn_chiller_pressed)
 
+        self.btn_squealer_pressed = self.builder.get_object("squeal_button")
+        self.btn_squealer_pressed.connect("pressed", self.on_btn_squealer_pressed)
+
+
         self.mbtn_laser_pressed = self.builder.get_object("mbtn-laser_start")
         self.mbtn_laser_pressed.connect("pressed", self.on_mbtn_laser_pressed)
 
@@ -60,22 +64,46 @@ class LaserClass:
             config.read(ini_file)
 
             if config.has_option('DISPLAY','PROGRAM_PREFIX') and config.has_option('DISPLAY','PROGRAM_DEFAULT'):
-                self.target_path = os.path.join(config.get('DISPLAY','PROGRAM_PREFIX'), config.get('DISPLAY','PROGRAM_DEFAULT'))
+                prefix = config.get('DISPLAY','PROGRAM_PREFIX')
+                prog = config.get('DISPLAY','PROGRAM_DEFAULT')
+                self.target_path = os.path.join(prefix, prog)
             else:
                 self.lbl_program_name.set_label("ncfile not found")
 
         glib.timeout_add_seconds(1, self.on_timer_tick)
 
+    def human_readable_file_date(self, f):
+        seconds = int(float(time.time()) - float(os.path.getmtime(f)))
+        value = ''
+        if seconds < 10:
+            value = 'NEW'
+        elif seconds < 60:
+            value = '%d sec' % seconds
+        elif seconds < (60 * 2):
+            value = '%d min' % (seconds / 60)
+        elif seconds < (2 * 60 * 60):
+            value = '%d mins' % (seconds / 60)
+        elif seconds > (60 * 60 * 60):
+            value = '%dh' % (seconds / (60 * 60 * 60))
+        else:
+            value = 'age?'
+        return (value)
+
     # chows the thing.ngc file and finds the numth occurance of 
     #  of a comment in the form "^(text)"
     def extract_headline(self, file_name, num):
         f = open(file_name, "r")
+        tag = self.human_readable_file_date(file_name)
         count = 0
         for line in f.read().splitlines():
             if re.match("^\(.*", line):
                 if count == (num - 1):
-                    return(re.sub('[\(\))]', '', line))
+                    line = re.sub('[\(\))]', '', line)
+                    return('%s (%s)' % (line, tag))
                 count += 1
+
+    def on_btn_squealer_pressed(self, pin, data = None):
+        print "poked squealer button"
 
     def on_timer_tick(self,userdata=None):
         if os.path.isfile(self.target_path):

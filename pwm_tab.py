@@ -23,6 +23,9 @@ class PWMClass:
         # sets what got loaded in from the ini_file
         self.calc_and_set_milliseconds(self.laser_milliseconds)
 
+        # self.btn1 = self.builder.get_object("period_50")
+        # self.btn1.connect("pressed", self.on_btn_pressed, 50)
+
         self.btn1 = self.builder.get_object("period_50")
         self.btn1.connect("pressed", self.on_btn_pressed, 50)
 
@@ -48,8 +51,8 @@ class PWMClass:
         self.laser_milliseconds = value
         if (self.laser_milliseconds < 20):
             self.laser_milliseconds = 20
-        if (self.laser_milliseconds > 950):
-            self.laser_milliseconds = 950
+        if (self.laser_milliseconds > 990):
+            self.laser_milliseconds = 990
         self.halcomp["laser_hertz_value"]  = (1000000 / self.laser_milliseconds)
 
         self.lbl_duration_value.set_label("%d" % self.laser_milliseconds)

@@ -23,6 +23,9 @@ setp hm2_5i20.0.gpio.030.is_opendrain true
 setp hm2_5i20.0.gpio.031.is_opendrain true
 
 # set these the pins that go to the DB-25 port to run appliances
+# these gpios have been retired - data is now set out the USB
+#  via an arduino
+# by the way: hm2_5i20.0.gpio.025 is still used 
 setp hm2_5i20.0.gpio.032.is_output true
 setp hm2_5i20.0.gpio.032.is_opendrain true
 setp hm2_5i20.0.gpio.032.invert_output true

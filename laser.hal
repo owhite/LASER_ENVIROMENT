@@ -1,5 +1,4 @@
 # Core EMC/HAL Loads
-#   this is pretty much the native hal file. 
 loadrt trivkins
 
 # motion controller, get name and thread periods from ini file
@@ -9,7 +8,21 @@ loadrt motmod servo_period_nsec=1000000 num_joints=3
 loadrt hostmot2
 loadrt hm2_pci config="firmware=hm2/5i20/SVST8_4_72_SPC.BIT num_encoders=0 num_pwmgens=1 num_stepgens=3"
 
-loadrt and2 count=6
+# owen
+loadusr -W appliance_control
+loadusr -W optics_movement
+
+loadrt not count=1
+addf not.0 servo-thread
+
+loadrt or2 count=5
+addf or2.0 servo-thread
+addf or2.1 servo-thread
+addf or2.2 servo-thread
+addf or2.3 servo-thread
+addf or2.4 servo-thread
+
+loadrt and2 count=7
 addf and2.0 servo-thread
 addf and2.1 servo-thread
 addf and2.2 servo-thread
@@ -25,7 +38,7 @@ addf hm2_5i20.0.read         servo-thread
 addf motion-command-handler  servo-thread
 addf motion-controller       servo-thread
 addf hm2_5i20.0.write        servo-thread
-addf hm2_5i20.0.pet_watchdog servo-thread
+# addf hm2_5i20.0.pet_watchdog servo-thread
      
 # PWM generation  
 
@@ -109,8 +122,8 @@ net emcmot.02.enable <= axis.2.amp-enable-out
 net emcmot.02.enable => hm2_5i20.0.stepgen.02.enable
 
 # position command and feedback
-net emcmot.02.pos-cmd <= axis.2.motor-pos-cmd
-net emcmot.02.pos-cmd => hm2_5i20.0.stepgen.02.position-cmd
+net emcmot.02.pos-cmd axis.2.motor-pos-cmd hm2_5i20.0.stepgen.02.position-cmd 
+
 net motor.02.pos-fb <= hm2_5i20.0.stepgen.02.position-fb
 net motor.02.pos-fb => axis.2.motor-pos-fb
 
@@ -128,21 +141,22 @@ setp hm2_5i20.0.stepgen.02.step_type       0
 # create a signal for the estop loopback
 
 # e-stop - this also collects input from the estop pin on the 5i20
+# hm2_5i20.0.gpio.014.in_not collects e-stop stuff
 setp hm2_5i20.0.gpio.014.is_output false
 
-# debounce stuff
-setp debounce.0.delay 50
-net debounce hm2_5i20.0.gpio.014.in_not debounce.0.1.in
+net e1 hm2_5i20.0.gpio.014.in_not and2.4.in0
+net e2 iocontrol.0.user-enable-out and2.4.in1
+net e3 and2.4.out => iocontrol.0.emc-enable-in
 
-net and3_a and2.0.in0 debounce.0.1.out
-net and3_b and2.0.in1 iocontrol.0.user-enable-out
-net estop-loop and2.0.out => iocontrol.0.emc-enable-in
+# optics_movement.optics-movement-flag
+# need to have movement and machine running for it to set halui.program.pause
+net o1 optics_movement.optics-movement-flag not.0.in
+net o2 not.0.out and2.5.in0
+net o3 halui.program.is-running and2.5.in1
+# no idea if this is appropriate
+net o4 and2.5.out halui.program.pause
 
-# e-stop - this also collects input from the estop pin on the 5i20
-# setp hm2_5i20.0.gpio.014.is_output false
-# net estop-loop iocontrol.0.user-enable-out => iocontrol.0.emc-enable-in
-
-# some other inputs
+# some other inputs - god forbid I documented what these were.
 setp hm2_5i20.0.gpio.009.is_output false
 setp hm2_5i20.0.gpio.010.is_output false
 setp hm2_5i20.0.gpio.011.is_output false
