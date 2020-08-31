@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name teensy)(type Legacy)(uri ${KIPRJMOD}/teensy.lib)(options "")(descr ""))
+  (lib (name balanceBot-rescue)(type Legacy)(uri ${KIPRJMOD}/balanceBot-rescue.lib)(options "")(descr ""))
+  (lib (name L6234PD)(type Legacy)(uri ${KIPRJMOD}/L6234PD.lib)(options "")(descr ""))
+  (lib (name CDS-13138-SMT-TR)(type Legacy)(uri ${KIPRJMOD}/CDS-13138-SMT-TR.lib)(options "")(descr ""))
+)
