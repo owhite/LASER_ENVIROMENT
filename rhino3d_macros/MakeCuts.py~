@@ -1,0 +1,25 @@
+# Turn all selected items into parts. 
+
+import rhinoscriptsyntax as rs
+import Rhino.RhinoApp as app
+from System.Drawing import Color
+import sys
+import time
+
+objects = rs.SelectedObjects()  
+
+if not objects: 
+    objects = rs.GetObjects("Select objects")
+
+objects = rs.SelectedObjects()  
+for object_id in objects:
+    if rs.IsCurve(object_id):
+        rs.ObjectLayer(object_id, "CUTS")
+
+rs.UnselectObjects(objects)
+
+print "Made cuts"
+
+success = False
+
+
