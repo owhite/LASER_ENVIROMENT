@@ -1,0 +1,8 @@
+(sym_lib_table
+  (lib (name teensy)(type Legacy)(uri ${KIPRJMOD}/teensy.lib)(options "")(descr ""))
+  (lib (name L6234PD)(type Legacy)(uri ${KIPRJMOD}/L6234PD.lib)(options "")(descr ""))
+  (lib (name CDS-13138-SMT-TR)(type Legacy)(uri ${KIPRJMOD}/CDS-13138-SMT-TR.lib)(options "")(descr ""))
+  (lib (name L712RA)(type Legacy)(uri ${KIPRJMOD}/L712RA.lib)(options "")(descr ""))
+  (lib (name laser_flow-rescue)(type Legacy)(uri ${KIPRJMOD}/laser_flow-rescue.lib)(options "")(descr ""))
+  (lib (name WP59EGW_CA)(type Legacy)(uri ${KIPRJMOD}/WP59EGW_CA.lib)(options "")(descr ""))
+)

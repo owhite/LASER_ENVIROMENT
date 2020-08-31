@@ -1,0 +1,664 @@
+EESchema Schematic File Version 4
+LIBS:load_cell-cache
+EELAYER 30 0
+EELAYER END
+$Descr User 8000 6000
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text GLabel 1145 940  0    50   Input ~ 0
+GND
+Text GLabel 3295 3640 2    50   Input ~ 0
+GP_2
+Text GLabel 1145 2040 0    50   Input ~ 0
+SPK_SIG
+Wire Wire Line
+	1220 940  1145 940 
+Wire Wire Line
+	3220 3640 3295 3640
+Wire Wire Line
+	1220 2040 1145 2040
+$Comp
+L Switch:SW_Push PB1
+U 1 1 5E615932
+P 6970 1420
+F 0 "PB1" H 6970 1705 50  0000 C CNN
+F 1 "SW_Push" H 6970 1614 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_SPST_TL3342" H 6970 1620 50  0001 C CNN
+F 3 "~" H 6970 1620 50  0001 C CNN
+	1    6970 1420
+	1    0    0    -1  
+$EndComp
+Text GLabel 6720 1420 0    50   Input ~ 0
++3.3v
+$Comp
+L Device:R R4
+U 1 1 5E6163C4
+P 6840 1780
+F 0 "R4" H 6690 1825 50  0000 L CNN
+F 1 "10k" H 6655 1730 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 6770 1780 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 6840 1780 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 6840 1780 50  0001 C CNN "P/N"
+F 5 "11" H 6840 1780 50  0001 C CNN "Group#"
+	1    6840 1780
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6770 1420 6720 1420
+Text GLabel 1150 3440 0    50   Input ~ 0
+ANALOG1
+Wire Wire Line
+	1220 3440 1150 3440
+Text GLabel 1145 1240 0    50   Input ~ 0
+DIR
+Wire Wire Line
+	1220 1240 1145 1240
+Text GLabel 1145 2140 0    50   Input ~ 0
+SW1
+Wire Wire Line
+	1220 2140 1145 2140
+$Comp
+L teensy:Teensy3.2 U1
+U 1 1 5E2C5940
+P 2220 2290
+F 0 "U1" H 2220 3927 60  0000 C CNN
+F 1 "Teensy3.2" H 2220 3821 60  0000 C CNN
+F 2 "teensy:Teensy32" H 2220 1540 60  0000 C CNN
+F 3 "" H 2220 1540 60  0000 C CNN
+	1    2220 2290
+	1    0    0    -1  
+$EndComp
+Text GLabel 4690 990  2    50   Input ~ 0
+GND
+Wire Wire Line
+	4690 990  4610 990 
+$Comp
+L Device:R R1
+U 1 1 5E39B165
+P 4460 990
+F 0 "R1" H 4310 1035 50  0000 L CNN
+F 1 "4.7k" H 4275 940 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4390 990 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 4460 990 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 4460 990 50  0001 C CNN "P/N"
+F 5 "11" H 4460 990 50  0001 C CNN "Group#"
+	1    4460 990 
+	0    1    1    0   
+$EndComp
+Text GLabel 3880 990  0    50   Input ~ 0
++3.3v
+Wire Wire Line
+	3880 990  3920 990 
+Text GLabel 1150 2240 0    50   Input ~ 0
+SW2
+Text GLabel 1155 1540 0    50   Input ~ 0
+HRT
+Wire Wire Line
+	1155 1540 1220 1540
+$Comp
+L CDS-13138-SMT-TR:CDS-13138-SMT-TR LS1
+U 1 1 5EA88990
+P 4540 2540
+F 0 "LS1" H 5240 2805 50  0000 C CNN
+F 1 "CDS-13138-SMT-TR" H 5240 2714 50  0000 C CNN
+F 2 "CDS13138SMTTR" H 5790 2640 50  0001 L CNN
+F 3 "" H 5790 2540 50  0001 L CNN
+F 4 "Speakers & Transducers 0.7W 8 Ohm 850Hz SMT 13mm sq mylar SM2CO" H 5790 2440 50  0001 L CNN "Description"
+F 5 "4.2" H 5790 2340 50  0001 L CNN "Height"
+F 6 "" H 5790 2240 50  0001 L CNN "Mouser2 Part Number"
+F 7 "" H 5790 2140 50  0001 L CNN "Mouser2 Price/Stock"
+F 8 "CUI Devices" H 5790 2040 50  0001 L CNN "Manufacturer_Name"
+F 9 "CDS-13138-SMT-TR" H 5790 1940 50  0001 L CNN "Manufacturer_Part_Number"
+	1    4540 2540
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D5
+U 1 1 5EADF974
+P 4070 990
+F 0 "D5" H 4063 1206 50  0001 C CNN
+F 1 "LED" H 4063 1115 50  0001 C CNN
+F 2 "LED_SMD:LED_0805_2012Metric" H 4070 990 50  0001 C CNN
+F 3 "~" H 4070 990 50  0001 C CNN
+	1    4070 990 
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:RJ45 J1
+U 1 1 5EAE2741
+P 960 4460
+F 0 "J1" H 1017 5127 50  0000 C CNN
+F 1 "RJ45" H 1017 5036 50  0000 C CNN
+F 2 "Connector_RJ:my_RJ45_Amphenol" V 960 4485 50  0001 C CNN
+F 3 "~" V 960 4485 50  0001 C CNN
+	1    960  4460
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	6840 1630 6840 1580
+Wire Wire Line
+	6840 1580 6720 1580
+Text GLabel 6720 1580 0    50   Input ~ 0
+PB_IN
+Wire Wire Line
+	6720 1990 6840 1990
+Wire Wire Line
+	6840 1990 6840 1930
+Text GLabel 6720 1990 0    50   Input ~ 0
+GND
+Wire Wire Line
+	7170 1420 7200 1420
+Wire Wire Line
+	7200 1420 7200 1580
+Wire Wire Line
+	7200 1580 6840 1580
+Connection ~ 6840 1580
+Wire Wire Line
+	4220 990  4310 990 
+Text GLabel 4690 1230 2    50   Input ~ 0
+HRT
+Wire Wire Line
+	4690 1230 4610 1230
+$Comp
+L Device:R R2
+U 1 1 5EB24990
+P 4460 1230
+F 0 "R2" H 4310 1275 50  0000 L CNN
+F 1 "4.7k" H 4275 1180 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4390 1230 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 4460 1230 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 4460 1230 50  0001 C CNN "P/N"
+F 5 "11" H 4460 1230 50  0001 C CNN "Group#"
+	1    4460 1230
+	0    1    1    0   
+$EndComp
+Text GLabel 3880 1230 0    50   Input ~ 0
++3.3v
+Wire Wire Line
+	3880 1230 3920 1230
+$Comp
+L Device:LED D4
+U 1 1 5EB24998
+P 4070 1230
+F 0 "D4" H 4063 1446 50  0001 C CNN
+F 1 "LED" H 4063 1355 50  0001 C CNN
+F 2 "LED_SMD:LED_0805_2012Metric" H 4070 1230 50  0001 C CNN
+F 3 "~" H 4070 1230 50  0001 C CNN
+	1    4070 1230
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4220 1230 4310 1230
+$Comp
+L Device:R R5
+U 1 1 5EB28B32
+P 4290 2640
+F 0 "R5" H 4140 2685 50  0000 L CNN
+F 1 "100" H 4105 2590 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4220 2640 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 4290 2640 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 4290 2640 50  0001 C CNN "P/N"
+F 5 "11" H 4290 2640 50  0001 C CNN "Group#"
+	1    4290 2640
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4540 2640 4440 2640
+Text GLabel 4070 2640 0    50   Input ~ 0
+SPK_SIG
+Wire Wire Line
+	4140 2640 4070 2640
+Text GLabel 6030 2640 2    50   Input ~ 0
+GND
+Wire Wire Line
+	6030 2640 5940 2640
+Wire Wire Line
+	1360 4160 1460 4160
+Wire Wire Line
+	1360 4260 1460 4260
+Wire Wire Line
+	1360 4360 1460 4360
+Wire Wire Line
+	1360 4460 1460 4460
+Wire Wire Line
+	1360 4560 1460 4560
+Wire Wire Line
+	1360 4660 1460 4660
+Wire Wire Line
+	1360 4760 1460 4760
+Wire Wire Line
+	1360 4860 1460 4860
+Text GLabel 1460 4160 2    50   Input ~ 0
+GND
+Text GLabel 1460 4260 2    50   Input ~ 0
+EXT_PWR
+Text GLabel 1460 4360 2    50   Input ~ 0
+GP_1
+Text GLabel 1460 4460 2    50   Input ~ 0
+GP_2
+Text GLabel 1460 4560 2    50   Input ~ 0
+GP_3
+Text GLabel 1460 4660 2    50   Input ~ 0
+GP_4
+Text GLabel 1460 4760 2    50   Input ~ 0
+GND
+Text GLabel 1460 4860 2    50   Input ~ 0
++5v
+Wire Wire Line
+	3270 3440 3220 3440
+Text GLabel 3270 3440 2    50   Input ~ 0
++3.3v
+Wire Wire Line
+	3270 3240 3220 3240
+Text GLabel 3270 3240 2    50   Input ~ 0
++5v
+Wire Wire Line
+	1220 2240 1150 2240
+$Comp
+L Transistor_FET:BUZ11 Q1
+U 1 1 5EA9C65C
+P 5590 3250
+F 0 "Q1" H 5796 3296 50  0000 L CNN
+F 1 "BUZ11" H 5796 3205 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 5840 3175 50  0001 L CIN
+F 3 "http://www.fairchildsemi.com/ds/BU/BUZ11.pdf" H 5590 3250 50  0001 L CNN
+	1    5590 3250
+	1    0    0    -1  
+$EndComp
+Text GLabel 1145 1340 0    50   Input ~ 0
+STEP
+Wire Wire Line
+	1220 1340 1145 1340
+Text GLabel 1145 1440 0    50   Input ~ 0
+GECKO
+Wire Wire Line
+	1220 1440 1145 1440
+Text GLabel 1150 3340 0    50   Input ~ 0
+ANALOG2
+Wire Wire Line
+	1220 3340 1150 3340
+Text GLabel 1150 3240 0    50   Input ~ 0
+ANALOG3
+Wire Wire Line
+	1220 3240 1150 3240
+Text GLabel 1140 1140 0    50   Input ~ 0
+PB_IN
+Wire Wire Line
+	1140 1140 1220 1140
+Text GLabel 4680 1550 2    50   Input ~ 0
+LED1
+Wire Wire Line
+	4680 1550 4600 1550
+$Comp
+L Device:R R3
+U 1 1 5EAB0176
+P 4450 1550
+F 0 "R3" H 4300 1595 50  0000 L CNN
+F 1 "4.7k" H 4265 1500 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4380 1550 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 4450 1550 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 4450 1550 50  0001 C CNN "P/N"
+F 5 "11" H 4450 1550 50  0001 C CNN "Group#"
+	1    4450 1550
+	0    1    1    0   
+$EndComp
+Text GLabel 3870 1550 0    50   Input ~ 0
++3.3v
+Wire Wire Line
+	3870 1550 3910 1550
+$Comp
+L Device:LED D3
+U 1 1 5EAB017E
+P 4060 1550
+F 0 "D3" H 4053 1766 50  0001 C CNN
+F 1 "LED" H 4053 1675 50  0001 C CNN
+F 2 "LED_SMD:LED_0805_2012Metric" H 4060 1550 50  0001 C CNN
+F 3 "~" H 4060 1550 50  0001 C CNN
+	1    4060 1550
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4210 1550 4300 1550
+Text GLabel 4680 1800 2    50   Input ~ 0
+LED2
+Wire Wire Line
+	4680 1800 4600 1800
+$Comp
+L Device:R R6
+U 1 1 5EAB2ED6
+P 4450 1800
+F 0 "R6" H 4300 1845 50  0000 L CNN
+F 1 "4.7k" H 4265 1750 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4380 1800 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 4450 1800 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 4450 1800 50  0001 C CNN "P/N"
+F 5 "11" H 4450 1800 50  0001 C CNN "Group#"
+	1    4450 1800
+	0    1    1    0   
+$EndComp
+Text GLabel 3870 1800 0    50   Input ~ 0
++3.3v
+Wire Wire Line
+	3870 1800 3910 1800
+$Comp
+L Device:LED D2
+U 1 1 5EAB2EDE
+P 4060 1800
+F 0 "D2" H 4053 2016 50  0001 C CNN
+F 1 "LED" H 4053 1925 50  0001 C CNN
+F 2 "LED_SMD:LED_0805_2012Metric" H 4060 1800 50  0001 C CNN
+F 3 "~" H 4060 1800 50  0001 C CNN
+	1    4060 1800
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4210 1800 4300 1800
+Text GLabel 4680 2020 2    50   Input ~ 0
+LED3
+Wire Wire Line
+	4680 2020 4600 2020
+$Comp
+L Device:R R7
+U 1 1 5EAB5681
+P 4450 2020
+F 0 "R7" H 4300 2065 50  0000 L CNN
+F 1 "4.7k" H 4265 1970 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4380 2020 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 4450 2020 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 4450 2020 50  0001 C CNN "P/N"
+F 5 "11" H 4450 2020 50  0001 C CNN "Group#"
+	1    4450 2020
+	0    1    1    0   
+$EndComp
+Text GLabel 3870 2020 0    50   Input ~ 0
++3.3v
+Wire Wire Line
+	3870 2020 3910 2020
+$Comp
+L Device:LED D1
+U 1 1 5EAB5689
+P 4060 2020
+F 0 "D1" H 4053 2236 50  0001 C CNN
+F 1 "LED" H 4053 2145 50  0001 C CNN
+F 2 "LED_SMD:LED_0805_2012Metric" H 4060 2020 50  0001 C CNN
+F 3 "~" H 4060 2020 50  0001 C CNN
+	1    4060 2020
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4210 2020 4300 2020
+Text GLabel 1140 3140 0    50   Input ~ 0
+LED1
+Wire Wire Line
+	1140 3140 1220 3140
+Text GLabel 1140 3040 0    50   Input ~ 0
+LED2
+Wire Wire Line
+	1140 3040 1220 3040
+Text GLabel 1140 2940 0    50   Input ~ 0
+LED3
+Wire Wire Line
+	1140 2940 1220 2940
+$Comp
+L Device:R R8
+U 1 1 5EAC0011
+P 5500 3530
+F 0 "R8" H 5350 3575 50  0000 L CNN
+F 1 "10k" H 5315 3480 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 5430 3530 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 5500 3530 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 5500 3530 50  0001 C CNN "P/N"
+F 5 "11" H 5500 3530 50  0001 C CNN "Group#"
+	1    5500 3530
+	0    -1   -1   0   
+$EndComp
+Text GLabel 5730 3650 2    50   Input ~ 0
+GND
+Text GLabel 5480 2980 0    50   Input ~ 0
+MTR_CTRL
+Text GLabel 5290 3250 0    50   Input ~ 0
+GECKO
+Wire Wire Line
+	5290 3250 5330 3250
+Wire Wire Line
+	5350 3530 5330 3530
+Wire Wire Line
+	5330 3530 5330 3250
+Connection ~ 5330 3250
+Wire Wire Line
+	5330 3250 5390 3250
+Wire Wire Line
+	5650 3530 5690 3530
+Wire Wire Line
+	5690 3530 5690 3450
+Wire Wire Line
+	5730 3650 5690 3650
+Wire Wire Line
+	5690 3650 5690 3530
+Connection ~ 5690 3530
+Wire Wire Line
+	5690 3050 5690 2980
+Wire Wire Line
+	5690 2980 5480 2980
+$Comp
+L Device:R R9
+U 1 1 5EAE6D75
+P 5490 1760
+F 0 "R9" H 5340 1805 50  0000 L CNN
+F 1 "4.7k" H 5305 1710 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 5420 1760 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 5490 1760 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 5490 1760 50  0001 C CNN "P/N"
+F 5 "11" H 5490 1760 50  0001 C CNN "Group#"
+	1    5490 1760
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R10
+U 1 1 5EAE9518
+P 5610 1760
+F 0 "R10" H 5460 1805 50  0000 L CNN
+F 1 "4.7k" H 5425 1710 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 5540 1760 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 5610 1760 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 5610 1760 50  0001 C CNN "P/N"
+F 5 "11" H 5610 1760 50  0001 C CNN "Group#"
+	1    5610 1760
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 SWITCH1
+U 1 1 5EAFB298
+P 5210 1450
+F 0 "SWITCH1" H 5128 1217 50  0000 C CNN
+F 1 "Conn_01x03" H 5128 1216 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 5210 1450 50  0001 C CNN
+F 3 "~" H 5210 1450 50  0001 C CNN
+	1    5210 1450
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5410 1350 5510 1350
+Text GLabel 5510 1350 2    50   Input ~ 0
++3.3v
+Text GLabel 5770 1450 2    50   Input ~ 0
+SW1
+Text GLabel 5770 1550 2    50   Input ~ 0
+SW2
+Wire Wire Line
+	5410 1450 5610 1450
+Wire Wire Line
+	5410 1550 5490 1550
+Wire Wire Line
+	5610 1610 5610 1450
+Connection ~ 5610 1450
+Wire Wire Line
+	5610 1450 5770 1450
+Wire Wire Line
+	5490 1610 5490 1550
+Connection ~ 5490 1550
+Wire Wire Line
+	5490 1550 5770 1550
+Text GLabel 5770 1970 2    50   Input ~ 0
+GND
+Wire Wire Line
+	5490 1910 5490 1970
+Wire Wire Line
+	5610 1910 5610 1970
+Wire Wire Line
+	5490 1970 5610 1970
+Connection ~ 5610 1970
+Wire Wire Line
+	5610 1970 5770 1970
+$Comp
+L Device:R R11
+U 1 1 5EB1A679
+P 6770 3330
+F 0 "R11" H 6620 3375 50  0000 L CNN
+F 1 "50k" H 6585 3280 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 6700 3330 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 6770 3330 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 6770 3330 50  0001 C CNN "P/N"
+F 5 "11" H 6770 3330 50  0001 C CNN "Group#"
+	1    6770 3330
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R12
+U 1 1 5EB1D21D
+P 6920 3330
+F 0 "R12" H 6770 3375 50  0000 L CNN
+F 1 "62k" H 6735 3280 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 6850 3330 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/ROHM-Semiconductor/ESR10EZPF5102?qs=DyUWGjl%252BcVsMTSBF51O24w%3D%3D" H 6920 3330 50  0001 C CNN
+F 4 "755-ESR10EZPF5102" H 6920 3330 50  0001 C CNN "P/N"
+F 5 "11" H 6920 3330 50  0001 C CNN "Group#"
+	1    6920 3330
+	-1   0    0    1   
+$EndComp
+Text GLabel 6650 3560 0    50   Input ~ 0
++5v
+Text GLabel 7030 3560 2    50   Input ~ 0
+GND
+Wire Wire Line
+	6770 3480 6770 3560
+Wire Wire Line
+	6770 3560 6650 3560
+Wire Wire Line
+	6920 3480 6920 3560
+Wire Wire Line
+	6920 3560 7030 3560
+Text GLabel 6690 3060 0    50   Input ~ 0
+LCv
+Wire Wire Line
+	6690 3060 6770 3060
+Wire Wire Line
+	6770 3060 6770 3180
+Wire Wire Line
+	6920 3180 6920 3060
+Wire Wire Line
+	6920 3060 6770 3060
+Connection ~ 6770 3060
+Text GLabel 3295 3540 2    50   Input ~ 0
+GP_4
+Wire Wire Line
+	3220 3540 3295 3540
+$Comp
+L Connector_Generic:Conn_01x02 PWR1
+U 1 1 5EB4B517
+P 4080 3300
+F 0 "PWR1" H 4160 3246 50  0000 L CNN
+F 1 "Conn_01x02" H 4160 3201 50  0001 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 4080 3300 50  0001 C CNN
+F 3 "~" H 4080 3300 50  0001 C CNN
+	1    4080 3300
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x05 GECKO1
+U 1 1 5EB4BE0E
+P 2430 4290
+F 0 "GECKO1" H 2510 4286 50  0000 L CNN
+F 1 "Conn_01x05" H 2510 4241 50  0001 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 2430 4290 50  0001 C CNN
+F 3 "~" H 2430 4290 50  0001 C CNN
+	1    2430 4290
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x05 DETECTORS1
+U 1 1 5EB4C64B
+P 2430 4870
+F 0 "DETECTORS1" H 2510 4866 50  0000 L CNN
+F 1 "Conn_01x05" H 2510 4821 50  0001 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 2430 4870 50  0001 C CNN
+F 3 "~" H 2430 4870 50  0001 C CNN
+	1    2430 4870
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	4280 3300 4350 3300
+Wire Wire Line
+	4280 3400 4350 3400
+Wire Wire Line
+	2630 4090 2700 4090
+Wire Wire Line
+	2630 4190 2700 4190
+Wire Wire Line
+	2630 4290 2700 4290
+Wire Wire Line
+	2630 4390 2700 4390
+Wire Wire Line
+	2630 4490 2700 4490
+Wire Wire Line
+	2630 4670 2700 4670
+Wire Wire Line
+	2630 4770 2700 4770
+Wire Wire Line
+	2630 4870 2700 4870
+Wire Wire Line
+	2630 4970 2700 4970
+Wire Wire Line
+	2630 5070 2700 5070
+Text GLabel 4350 3300 2    50   Input ~ 0
+Vcc
+Text GLabel 4350 3400 2    50   Input ~ 0
+GND
+Text GLabel 2700 4090 2    50   Input ~ 0
+STEP
+Text GLabel 2700 4190 2    50   Input ~ 0
+DIR
+Text GLabel 2700 4290 2    50   Input ~ 0
+GND
+Text GLabel 2700 4390 2    50   Input ~ 0
+MTR_CTRL
+Text GLabel 2700 4490 2    50   Input ~ 0
+Vcc
+Text GLabel 2700 4670 2    50   Input ~ 0
+LCv
+Text GLabel 2700 4770 2    50   Input ~ 0
+GND
+Text GLabel 2700 4870 2    50   Input ~ 0
+ANALOG1
+Text GLabel 2700 4970 2    50   Input ~ 0
+ANALOG2
+Text GLabel 2700 5070 2    50   Input ~ 0
+ANALOG3
+Wire Wire Line
+	1220 3540 1145 3540
+Text GLabel 1145 3540 0    50   Input ~ 0
+GP_1
+Wire Wire Line
+	1220 3640 1145 3640
+Text GLabel 1145 3640 0    50   Input ~ 0
+GP_3
+$EndSCHEMATC
