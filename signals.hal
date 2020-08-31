@@ -1,9 +1,0 @@
-##############################
-# dah little pins that receive input from the mesa board
-# 
-net in1 hm2_5i20.0.gpio.009.in_not signals.led_duty_cycle
-net in2 hm2_5i20.0.gpio.010.in signals.led_vswr
-net in3 hm2_5i20.0.gpio.011.in signals.led_digital_forward
-net in4 hm2_5i20.0.gpio.012.in signals.led_digital_reflected
-net in5 hm2_5i20.0.gpio.013.in signals.led_over_temp
-
