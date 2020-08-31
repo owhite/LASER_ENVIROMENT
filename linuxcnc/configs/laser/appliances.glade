@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires gladevcp 0.0 -->
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkAdjustment" id="slide_adjust">
+    <property name="lower">1</property>
+    <property name="upper">100</property>
+    <property name="value">120</property>
+    <property name="step_increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="spin_adjust">
+    <property name="lower">1</property>
+    <property name="upper">1000</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+  </object>
+  <object class="GtkWindow" id="window1">
+    <property name="width_request">500</property>
+    <property name="height_request">250</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkHBox" id="hbox_plasma_settings">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkFrame" id="frm_appliances">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label_xalign">0.5</property>
+            <child>
+              <object class="GtkAlignment" id="ali_appliances">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="top_padding">2</property>
+                <property name="bottom_padding">2</property>
+                <property name="left_padding">2</property>
+                <property name="right_padding">2</property>
+                <child>
+                  <object class="GtkHBox" id="hbox1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkHBox" id="hbox2">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">1</property>
+                            <child>
+                              <object class="HAL_ToggleButton" id="btn_motor_ps">
+                                <property name="label" translatable="yes">Motor PS</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="HAL_LED" id="motor_ps.is-on">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="led_blink_rate">0</property>
+                                <property name="led_shape">2</property>
+                                <property name="led_size">30</property>
+                                <property name="off_color">black</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox3">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">1</property>
+                            <child>
+                              <object class="HAL_ToggleButton" id="btn_chiller">
+                                <property name="label" translatable="yes">Chiller</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="HAL_LED" id="chiller.is-on">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="led_blink_rate">0</property>
+                                <property name="led_shape">2</property>
+                                <property name="led_size">30</property>
+                                <property name="off_color">black</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox4">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">1</property>
+                            <child>
+                              <object class="HAL_ToggleButton" id="btn_laser_ps">
+                                <property name="label" translatable="yes">Laser PS</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="HAL_LED" id="laser_ps.is-on">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="led_blink_rate">0</property>
+                                <property name="led_shape">2</property>
+                                <property name="led_size">30</property>
+                                <property name="off_color">black</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkVBox" id="vbox2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkHBox" id="hbox5">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">1</property>
+                            <child>
+                              <object class="HAL_ToggleButton" id="btn_ventilation">
+                                <property name="label" translatable="yes">Ventilation</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="HAL_LED" id="ventilation.is-on">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="led_blink_rate">0</property>
+                                <property name="led_shape">2</property>
+                                <property name="led_size">30</property>
+                                <property name="off_color">black</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox6">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">1</property>
+                            <child>
+                              <object class="HAL_ToggleButton" id="btn_gas_assist">
+                                <property name="label" translatable="yes">Gas Assist</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="HAL_LED" id="gas_assist.is-on">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="led_blink_rate">0</property>
+                                <property name="led_shape">2</property>
+                                <property name="led_size">30</property>
+                                <property name="off_color">black</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox7">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">1</property>
+                            <child>
+                              <object class="HAL_ToggleButton" id="btn_air_pump">
+                                <property name="label" translatable="yes">Air Pump</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="HAL_LED" id="air_pump.is-on">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="led_blink_rate">0</property>
+                                <property name="led_shape">2</property>
+                                <property name="led_size">30</property>
+                                <property name="off_color">black</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="lbl_program_name">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="ypad">5</property>
+                <property name="label" translatable="yes">Appliances</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbx_laser_power">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFrame" id="frm_laser_power">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label_xalign">0</property>
+                <child>
+                  <object class="GtkAlignment" id="ali_corner_lock">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="top_padding">2</property>
+                    <property name="bottom_padding">2</property>
+                    <property name="left_padding">2</property>
+                    <property name="right_padding">2</property>
+                    <child>
+                      <object class="HAL_VScale" id="laser_power">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="adjustment">slide_adjust</property>
+                        <property name="round_digits">0</property>
+                        <property name="digits">0</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="lbl_frm_corner_height_lock">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="ypad">5</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Laser Power&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="lbl_frm_appliances2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="yalign">0.059999998658895493</property>
+                <property name="ypad">5</property>
+                <property name="label" translatable="yes">&lt;b&gt;Laser Pulse&lt;/b&gt;</property>
+                <property name="use_markup">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbl_frm_appliances1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="ypad">5</property>
+                <property name="label" translatable="yes">Millisecs</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_SpinButton" id="spin_oneshot_time">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="max_length">6</property>
+                <property name="invisible_char">•</property>
+                <property name="invisible_char_set">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="adjustment">spin_adjust</property>
+                <property name="digits">6</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_CheckButton" id="chkbtn_oneshot">
+                <property name="label" translatable="yes">timed</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Button" id="mbtn-laser_start">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkImage" id="img_torch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="pixbuf">torch.svg</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">False</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_ToggleButton" id="squeal_button">
+                <property name="label" translatable="yes">Squealer</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

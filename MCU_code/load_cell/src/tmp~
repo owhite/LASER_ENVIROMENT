@@ -1,0 +1,23 @@
+#define MCU_PIN 13
+#define LED_PIN    14
+int DirPin     = 2;
+int StepPin    = 3;
+int GeckoEnbl  = 4;
+
+int SpkrPin    = 9;
+int PBPin      = 6;
+
+int LED1_r     = 5;
+int LED1_g     = 8;
+int LED2_r     = 23;
+int LED2_g     = 22;
+int LED3_r     = 21;
+int LED3_g     = 20;
+
+int SWPin1     = 10;
+int SWPin2     = 11;
+
+int LCPin1     = 15; 
+int LCPin2     = 16; 
+int LCPin3     = 17; 
+

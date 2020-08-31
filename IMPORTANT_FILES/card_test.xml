@@ -1,0 +1,132 @@
+<pyvcp>
+
+  <labelframe text="Jog Buttons">
+    <font>("Helvetica",16)</font>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <button>
+	<font>("Helvetica",20)</font>
+	<width>3</width>
+	<halpin>"X-enable"</halpin>
+	<text>"X"</text>
+      </button>
+      <label>
+	<text>"Jog Speed"</text>
+	<font>("Helvetica",16)</font>
+      </label>
+      <scale>
+	<font>("Helvetica",14)</font>
+	<halpin>"jog-speed-X"</halpin>
+	<resolution>1</resolution>
+	<orient>HORIZONTAL</orient>
+	<min_>-500</min_>
+	<max_>500</max_>
+      </scale>
+    </hbox>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <button>
+	<font>("Helvetica",20)</font>
+	<width>3</width>
+	<halpin>"Y-enable"</halpin>
+	<text>"Y"</text>
+      </button>
+      <label>
+	<text>"Jog Speed"</text>
+	<font>("Helvetica",16)</font>
+      </label>
+      <scale>
+	<font>("Helvetica",14)</font>
+	<halpin>"jog-speed-Y"</halpin>
+	<resolution>1</resolution>
+	<orient>HORIZONTAL</orient>
+	<min_>-500</min_>
+	<max_>500</max_>
+      </scale>
+    </hbox>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <button>
+	<font>("Helvetica",20)</font>
+	<width>3</width>
+	<halpin>"Z-enable"</halpin>
+	<text>"Z"</text>
+      </button>
+      <label>
+	<text>"Jog Speed"</text>
+	<font>("Helvetica",16)</font>
+      </label>
+      <scale>
+	<font>("Helvetica",14)</font>
+	<halpin>"jog-speed-Z"</halpin>
+	<resolution>1</resolution>
+	<orient>HORIZONTAL</orient>
+	<min_>-500</min_>
+	<max_>500</max_>
+      </scale>
+    </hbox>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <checkbutton>
+	<halpin>"laser-chkbtn"</halpin>
+	<text>"Laser"</text>
+      </checkbutton>
+    </hbox>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <checkbutton>
+	<halpin>"relay-chkbtn"</halpin>
+	<text>"Relay"</text>
+      </checkbutton>
+    </hbox>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <checkbutton>
+	<halpin>"pwm-chkbtn"</halpin>
+	<text>"PWM"</text>
+      </checkbutton>
+      <scale>
+	<font>("Helvetica",14)</font>
+	<halpin>"PWM_value"</halpin>
+	<resolution>1</resolution>
+	<orient>HORIZONTAL</orient>
+	<min_>0</min_>
+	<max_>66</max_>
+	<initval>20</initval>
+      </scale>
+      <vbox>
+	<relief>RAISED</relief>
+	<bd>3</bd>
+      </vbox>
+    </hbox>
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <checkbutton>
+	<halpin>"GP2_1-chkbtn"</halpin>	<text>"GP2_1"</text>
+      </checkbutton>
+      <checkbutton>
+	<halpin>"GP2_2-chkbtn"</halpin>	<text>"GP2_2"</text>
+      </checkbutton>
+      <checkbutton>
+	<halpin>"GP2_3-chkbtn"</halpin>	<text>"GP2_3"</text>
+      </checkbutton>
+      <checkbutton>
+	<halpin>"GP2_4-chkbtn"</halpin>	<text>"GP2_3"</text>
+      </checkbutton>
+    </hbox>
+
+  </labelframe>
+</pyvcp>

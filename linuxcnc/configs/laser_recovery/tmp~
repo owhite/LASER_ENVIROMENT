@@ -1,0 +1,5 @@
+setp hm2_5i24.0.gpio.053.is_output     true
+setp hm2_5i24.0.gpio.054.is_output     true
+setp hm2_5i24.0.gpio.055.is_output     true
+setp hm2_5i24.0.gpio.056.is_output     true
+

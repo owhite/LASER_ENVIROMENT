@@ -1,0 +1,373 @@
+#!/usr/bin/python
+
+# this is ALL the functions / logic that translate between the
+#  custom laser PCB connected to a mesa 5i24
+# it is launched by laser.hal in the linuxcnc/laser/ directory
+#  and is highly dependent on the other custom boards attached
+#  to PCB, and drives the laser DB-25 through the HAL layer
+
+import os
+import hal
+import time
+import sys
+
+device = {} # called device but it just applies to the relay component/appliances
+device['pin'] = {} # every appliance has a LED pin 
+device['pin'] = {'chiller'     : 'appliances.chiller.is-on',
+                 'motor_ps'    : 'appliances.motor_ps.is-on',
+                 'air_pump'    : 'appliances.air_pump.is-on',
+                 'laser_ps'    : 'appliances.laser_ps.is-on',
+                 'gas_assist'  : 'appliances.gas_assist.is-on',
+                 'ventilation' : 'appliances.ventilation.is-on'}
+
+device['cmd_state'] = {} # commands will result in a change to LED
+device['cmd_state'] = {0x01: True, 0x02: True, 0x03: True, 0x04: True, 0x05: True, 0x06: True, 0x07: False, 0x08: False, 0x09: False, 0x0A: False, 0x0B: False, 0x0C: False}
+
+device['appliance'] = {} # each command has an appliance
+device['appliance'] = {0x03: 'motor_ps', 0x02: 'chiller', 0x01: 'laser_ps', 0x04: 'ventilation', 0x05: 'gas_assist', 0x06: 'air_pump', 0x09: 'motor_ps', 0x08: 'chiller', 0x07: 'laser_ps', 0x0A: 'ventilation', 0x0B: 'gas_assist', 0x0C: 'air_pump'}
+
+device[True] = {} # each appliance has a True state associated with a command
+device[True] = {'motor_ps': 0x03, 'chiller': 0x02, 'laser_ps': 0x01, 'ventilation': 0x04, 'gas_assist': 0x05, 'air_pump': 0x06}
+
+device[False] = {} # each appliance has a False state associated with a command
+device[False] = {'motor_ps': 0x09, 'chiller': 0x08, 'laser_ps': 0x07, 'ventilation': 0x0A, 'gas_assist': 0x0B, 'air_pump': 0x0C}
+
+device['request'] = {} # each appliance has a requested state
+device['request'] = {'motor_ps': False, 'chiller': False, 'laser_ps': False, 'ventilation': False, 'gas_assist': False, 'air_pump': False}
+
+device['override'] = {} # each request can be an override
+device['override'] = {'motor_ps': False, 'chiller': False, 'laser_ps': False, 'ventilation': False, 'gas_assist': False, 'air_pump': False}
+
+device['state'] = {} # each appliance has a state
+device['state'] = {'motor_ps': False, 'chiller': False, 'laser_ps': False, 'ventilation': False, 'gas_assist': False, 'air_pump': False}
+
+# fairly complicated system. create pins that are
+#  connected to the custom laser card - connections
+#  are in laser.hal, which is a little silly
+relay = hal.component("relay") 
+relay.newpin("request", hal.HAL_U32, hal.HAL_IN)
+relay.newpin("bit1-out", hal.HAL_BIT, hal.HAL_OUT)
+relay.newpin("bit2-out", hal.HAL_BIT, hal.HAL_OUT)
+relay.newpin("bit3-out", hal.HAL_BIT, hal.HAL_OUT)
+relay.newpin("bit4-out", hal.HAL_BIT, hal.HAL_OUT)
+relay.ready()
+
+# machine commands sent to relay['request'] come in from
+# nc_files/M101 P-Number
+relay['request'] = 0
+
+# pins programmed on laser card for pwm
+pwm_gen_pin       = 'hm2_5i24.0.pwmgen.00.value'
+pwm_gen_frequency = 'hm2_5i24.0.pwmgen.pwm_frequency'
+
+# pins on the card to run the laser
+laser_activate = 'hm2_5i24.0.gpio.024'
+
+# RJ45 pins for flow and temperature settings
+flow_temp_pulse = 'hm2_5i24.0.gpio.049' # blinky LED
+flow_temp_tweet = 'hm2_5i24.0.gpio.050' # pin for flow temp
+flow_input      = 'hm2_5i24.0.gpio.051' # signal in
+temp_input      = 'hm2_5i24.0.gpio.052' # signal in
+
+# RJ45 pins for optics / load_cells
+load_cell_pulse       = 'hm2_5i24.0.gpio.061'  # blinky LED
+load_cell_tweet       = 'hm2_5i24.0.gpio.062'  # tweet for optics / load_cells
+load_cell_stop_squeal = 'hm2_5i24.0.gpio.063'  # control squealing noise
+load_cell_bumped      = 'hm2_5i24.0.gpio.064'  # optics bumped signal in
+
+# tied to M64 / M65 PO1
+laser_fire  = 'motion.digital-out-01'
+# estop. estop is not actually used just going to be pause
+estop_input = 'hm2_5i24.0.gpio.071' # signal in
+
+# this links to relay on the laser_board (not the big relay board) 
+activate_controller = 'hm2_5i24.0.gpio.025'
+
+# this will work for anything going out custom laser boards RJ45/GPIO connectors
+def command2Relay(cmd):
+    if cmd < 0:  cmd = 0
+    if cmd > 15: cmd = 0
+    relay['bit4-out'] = bool((cmd & 0b1000) >> 3)
+    relay['bit3-out'] = bool((cmd & 0b0100) >> 2)
+    relay['bit2-out'] = bool((cmd & 0b0010) >> 1)
+    relay['bit1-out'] = bool (cmd & 0b0001)
+
+def setPause():
+    hal.set_p('halui.program.pause', '1') # toggle pause on
+    print __file__ + ": PAUSING PROGRAM"
+    os.system('paplay /usr/share/sounds/LinuxMint/stereo/dialog-question.wav')
+    time.sleep(.1)
+    hal.set_p('halui.program.pause', '0') # toggle off
+
+def tweetDevice(pin): # change pin on peripheral to make a sound
+    setAsOutput(pin)
+    hal.set_p(pin + '.out', 'true')
+    hal.set_p(pin + '.out', 'false')
+    time.sleep(2)
+    hal.set_p(pin + '.out', 'true')
+
+def pulseDevice(pin): # change pin on peripheral to blink LED
+    setAsOutput(pin)
+    hal.set_p(pin + '.out', 'false')
+
+def setAsInput(pin): 
+    hal.set_p(pin + '.is_output', 'false') 
+
+def setAsOutput(pin): 
+    hal.set_p(pin + '.is_output', 'true') 
+    
+hal.set_p(laser_activate + '.invert_output', '1')
+hal.set_p(laser_activate + '.is_output', '1')
+
+old_cmd = ""
+pulseDebounce = time.time()
+loopTime = time.time()
+loopCount = 0
+
+flowWarningSent  = False
+tempWarningSent  = False
+programPaused    = False
+laserPrintToggle = True
+restoreGasState  = False
+
+#######
+# run time set up
+while(1):
+    # this loops until the loadrt abs happens in gmocappy_postgui.hal
+    if (hal.component_exists('abs') == True):
+        break
+
+setAsInput(estop_input)
+
+# hello flow / water temp board
+tweetDevice(flow_temp_tweet) # tweet board
+pulseDevice(flow_temp_pulse) # start heartbeat
+setAsInput(flow_input)      
+setAsInput(temp_input)
+
+# hello load_cell / optics collision board
+tweetDevice(load_cell_tweet) # tweet board
+pulseDevice(load_cell_pulse) # start heartbeat
+setAsInput (load_cell_bumped)
+setAsOutput(load_cell_stop_squeal)
+hal.set_p(load_cell_stop_squeal + '.out', str('true')) # start squealing
+
+# hello controller
+setAsOutput(activate_controller)
+hal.set_p(activate_controller + '.invert_output', '1')
+hal.set_p(activate_controller + '.out', '1')
+
+if hal.get_value('halui.program.pause'): 
+    programPaused = True
+
+#########
+# set pwm frequency
+pwm = '2000'
+print __file__ + ": SETTING LASER PWM: " + pwm
+hal.set_p(pwm_gen_frequency, pwm)
+
+#########
+# main loop begins here
+try:
+    while (1):
+        ######### 
+        # gather requests from button panel in gmoccapy
+        #  note: these are requests, they get resolved at the end of loop
+        for app in ('motor_ps', 'chiller', 'laser_ps', 'ventilation', 'gas_assist','air_pump'): 
+            if device['override'][app]: # dont collect data from button
+                # check to see if it's been switched to correct state
+                if hal.get_value('appliances.btn_' + app) == device['request'][app]:
+                    device['override'][app] = False # it is, so turn off override
+            else: # collect button results
+                if hal.get_value('appliances.btn_' + app):
+                    device['request'][app] = True
+                else:
+                    device['request'][app] = False
+            
+
+        #########
+        # gather address machine requests (from gcode commands)
+        #  also get resolved at end of loop
+        # note: these override button requests ONCE per call
+        cmd = relay['request'] # comes in from the machine
+        # print cmd
+        if cmd != 99: # new request came in
+            app = device['appliance'].get(cmd) # each command has an appliance
+            state = device['cmd_state'].get(cmd)  # each command requests a change
+            device['request'][app] = state
+            device['override'][app] = True
+            relay['request'] = 99
+
+        ##########
+        # twiddle lights based on flow and temp status
+        hal.set_p('chiller.flow_led', str(not hal.get_value(flow_input + '.in')))
+        hal.set_p('chiller.temp_led', str(not hal.get_value(temp_input + '.in')))
+
+        ##########
+        # twiddle flag based on flow and temp status
+        laserSafe = False
+        if not hal.get_value(flow_input + '.in') and not hal.get_value(temp_input + '.in'):
+            laserSafe = True
+        hal.set_p(load_cell_stop_squeal + '.out', str(not hal.get_value('appliances.squeal_button')))
+
+        #########
+        # movement detected, trip flag
+        if hal.get_value(load_cell_bumped + '.in'):
+            hal.set_p('chiller.bump_led', str(not hal.get_value(load_cell_bumped + '.in')))
+            # movement only matters if a program is running
+            if hal.get_value('halui.program.is-running'):
+                setPause() # if it is, then pause
+        else:
+            hal.set_p('chiller.bump_led', str(not hal.get_value(load_cell_bumped + '.in')))
+
+        #########
+        # something broke e-stop, go into pause
+        if hal.get_value('halui.program.is-running') and hal.get_value(estop_input + '.in'):
+            setPause()
+
+        #########
+        # set laser power based on machine input
+        laser_input = hal.get_value('appliances.power_in')
+        if laser_input < 1: laser_input = 1
+        if laser_input > 100: laser_input = 100
+        val = int(laser_input * 60.0 / 100.0)
+        val = int(laser_input * (60.0 / 100.0))
+        if val < 1: laser_input = 1.0
+        if val > 60: laser_input = 60.0
+        hal.set_p(pwm_gen_pin, str(val))
+
+        ###########
+        # restore from pause
+        # program is not in pause but program came out of pause
+        if not hal.get_value('halui.program.is-paused') and programPaused: 
+            # check if gas was on, restore it
+            programPaused = False
+            print __file__ + ": LEAVING PAUSE"
+            if restoreGasState:
+                restoreGasState = False
+                device['request']['gas_assist'] = True
+                device['override'][app] = True
+
+
+        ############
+        # two things that should stop with pauses
+        #  gas_assist and firing the laser
+        #  laser is handled below
+        # when it changes to pause state, and the gas_assist is on
+        if hal.get_value('halui.program.is-paused'):
+            if device['state']['gas_assist'] and not programPaused:
+                print __file__ + ": ENTERING PAUSE"
+                device['request']['gas_assist'] = False # turn if off
+                device['override'][app] = True
+                restoreGasState = True # save the state
+            programPaused = True 
+
+        ######## one shot test
+        # user requested timed pulse
+        if pulseDebounce + 1 < time.time():
+            hal.set_p('oneshot.0.in', '0')
+            if hal.get_value('appliances.chkbtn_oneshot') and hal.get_value('appliances.laser_on_pulse'):
+                hal.set_p('oneshot.0.width', str(hal.get_value('appliances.laser_pulse_width')))
+                hal.set_p('oneshot.0.in', '1')
+                pulseDebounce = time.time()
+
+        ###########
+        # run laser if these conditions are satisfied
+        paused = hal.get_value('halui.program.is-paused') # pause status
+        button_cmd = hal.get_value('appliances.laser_on_cont') # user request
+        pulse = hal.get_value('oneshot.0.out') # receive a oneshot to beep laser
+        machine_cmd = hal.get_value(laser_fire) # or maybe a M64 P03 gcode request
+        if not paused and laserSafe and (button_cmd or machine_cmd or pulse):
+            hal.set_p(laser_activate + '.out', '1')
+            if laserPrintToggle:
+                if device['state']['laser_ps']: # laser ps is on
+                    print __file__ + ": LASER ON"
+                else: 
+                    print __file__ + ": REQUEST WONT WORK - LASER PS IS NOT ON"
+            laserPrintToggle = False
+        else:
+            laserPrintToggle = True
+            hal.set_p(laser_activate + '.out', '0')
+
+        ##########
+        # the user insists on running the laser. but
+        #  laser_ps is on and temp and water flow is bad and it's not paused
+        #  so fuck you - disable laser, and warn the user. 
+        if device['state']['laser_ps'] and not laserSafe and not paused and (button_cmd or machine_cmd or pulse):
+            print __file__ + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            print __file__ + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            os.system('paplay /usr/share/sounds/LinuxMint/stereo/phone-incoming-call.ogg')
+            if hal.get_value(flow_input + '.in'):
+                print __file__ + ": FLOW PROBLEM"
+                if not flowWarningSent: 
+                    hal.set_p('water_flow_warning.trigger', 'true')
+                    flowWarningSent = True
+            if hal.get_value(temp_input + '.in'):
+                print __file__ + ": TEMP PROBLEM"
+                if not tempWarningSent: 
+                    hal.set_p('water_temp_warning.trigger', 'true')
+                    tempWarningSent = True
+            print __file__ + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            print __file__ + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            time.sleep(.4)
+
+        ########
+        # software save, if the chiller is off dont turn on laser_ps 
+        if device['request']['laser_ps'] and not device['request']['chiller']:
+            device['request']['laser_ps'] = False
+
+        # if program is paused, turn off the gas
+        if programPaused: 
+            device['request']['gas_assist'] = False
+
+        ######## RELAY BOARD RESOLUTION
+        # after going through all that logic, set the state of the
+        # LEDs in the UI, and the states of the relay_board
+        for app in ('motor_ps', 'chiller', 'laser_ps', 'ventilation', 'gas_assist','air_pump'): 
+            state_request = device['request'][app]
+
+            if state_request != device['state'][app]:
+                cmd = device[state_request][app]
+                pin = device['pin'][app]
+                hal.set_p(pin, str(int(state_request))) # change LED
+                hal.set_p('appliances.' + app + '_in', str(int(state_request))) # change button
+                device['state'][app] = state_request
+                device['override'][app] = True # set high until UI button changes
+
+                state = hal.get_value(device['pin'][app])
+                cmd = device[state][app]
+                command2Relay(cmd)
+
+        # this basically restomps the relay board even if there is no change
+        # but you cant do it too quickly - the relay board has debounce/smoothing and will choke
+        if loopTime + .1 < time.time(): 
+            l1 = ('motor_ps', 'chiller', 'laser_ps', 'ventilation', 'gas_assist','air_pump')
+            app = l1[loopCount]
+            state = hal.get_value(device['pin'][app])
+            cmd = device[state][app]
+            command2Relay(cmd)
+            loopTime = time.time()
+            loopCount = loopCount + 1
+            if loopCount > 5:
+                loopCount = 0
+
+except (KeyboardInterrupt, SystemExit):
+    # another way to catch program ending
+    print __file__ + ": COMPONENT UNLOADED"
+    hal.set_p(activate_controller + '.out', '0')
+    relay['bit4-out'] = False
+    relay['bit3-out'] = False
+    relay['bit2-out'] = False
+    relay['bit1-out'] = False
+    raise SystemExit, 0
+
+except (RuntimeError, SystemExit):
+    # another way to catch program ending
+    print __file__ + ": COMPONENT UNLOADED"
+    hal.set_p(activate_controller + '.out', '0')
+    relay['bit4-out'] = False
+    relay['bit3-out'] = False
+    relay['bit2-out'] = False
+    relay['bit1-out'] = False
+    raise SystemExit, 0
+

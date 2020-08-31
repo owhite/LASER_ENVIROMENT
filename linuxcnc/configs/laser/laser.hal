@@ -1,0 +1,148 @@
+loadrt trivkins coordinates=xyz
+
+loadrt motmod base_period_nsec=100000 servo_period_nsec=1000000 num_joints=3 num_dio=10
+loadrt hostmot2
+loadrt hm2_pci
+
+loadrt message names=water_flow_warning,water_temp_warning messages="check water flow, check water temperature"
+addf water_flow_warning servo-thread
+addf water_temp_warning servo-thread
+
+########
+# /usr/bin/laser_handlers deals with:
+#  creating relay, water, and optics components
+#   to deal with the appliances, waterflow/temperature (water), and collision detection 
+# it also tests for collisions, pauses the machine, sets pwm, and activates laser
+loadusr laser_handlers
+
+# needed for short laser pulses
+loadrt oneshot count=1
+addf oneshot.0 servo-thread 
+
+# add motion controller functions to servo thread
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+
+addf hm2_5i24.0.read  servo-thread
+addf hm2_5i24.0.write servo-thread
+
+# set up pwmgen - needed to drive the laser
+# all other pin banging is done in /usr/bin/laser_handlers
+setp hm2_5i24.0.pwmgen.00.enable 1
+setp hm2_5i24.0.pwmgen.00.output-type 1
+setp hm2_5i24.0.pwmgen.00.scale 100
+setp hm2_5i24.0.pwmgen.00.value 1
+
+# start changing states
+# RJ45 pins on the custom PCB for relay control
+setp hm2_5i24.0.gpio.053.is_output true
+setp hm2_5i24.0.gpio.054.is_output true
+setp hm2_5i24.0.gpio.055.is_output true
+setp hm2_5i24.0.gpio.056.is_output true
+
+# set them low
+setp hm2_5i24.0.gpio.053.out false
+setp hm2_5i24.0.gpio.054.out false
+setp hm2_5i24.0.gpio.055.out false
+setp hm2_5i24.0.gpio.056.out false
+
+# connect these to components created by laser_handler
+net p1 hm2_5i24.0.gpio.053.out relay.bit1-out
+net p2 hm2_5i24.0.gpio.054.out relay.bit2-out
+net p3 hm2_5i24.0.gpio.055.out relay.bit3-out
+net p4 hm2_5i24.0.gpio.056.out relay.bit4-out
+
+####################
+# Motion stuff
+# X [0] Axis
+# ################
+
+# reverse direction
+setp hm2_5i24.0.gpio.034.invert_output true
+
+# axis enable chain
+newsig emcmot.00.enable bit
+sets emcmot.00.enable FALSE
+
+net emcmot.00.enable <= joint.0.amp-enable-out 
+net emcmot.00.enable => hm2_5i24.0.stepgen.00.enable
+
+# position command and feedback
+net emcmot.00.pos-cmd <= joint.0.motor-pos-cmd
+net emcmot.00.pos-cmd => hm2_5i24.0.stepgen.00.position-cmd
+
+net motor.00.pos-fb <= hm2_5i24.0.stepgen.00.position-fb
+net motor.00.pos-fb => joint.0.motor-pos-fb
+
+# timing parameters
+setp hm2_5i24.0.stepgen.00.dirsetup        200
+setp hm2_5i24.0.stepgen.00.dirhold         200
+setp hm2_5i24.0.stepgen.00.steplen         3500
+setp hm2_5i24.0.stepgen.00.stepspace       500
+setp hm2_5i24.0.stepgen.00.position-scale  40000
+setp hm2_5i24.0.stepgen.00.maxvel          2.0
+setp hm2_5i24.0.stepgen.00.maxaccel        4.0
+setp hm2_5i24.0.stepgen.00.step_type       0
+
+# ################
+# Y [1] Axis
+# ################
+
+# reverse direction
+setp hm2_5i24.0.gpio.036.invert_output true
+
+# axis enable chain
+newsig emcmot.01.enable bit
+sets emcmot.01.enable FALSE
+
+net emcmot.01.enable <= joint.1.amp-enable-out 
+net emcmot.01.enable => hm2_5i24.0.stepgen.01.enable
+
+# position command and feedback
+net emcmot.01.pos-cmd <= joint.1.motor-pos-cmd
+net emcmot.01.pos-cmd => hm2_5i24.0.stepgen.01.position-cmd
+
+net motor.01.pos-fb <= hm2_5i24.0.stepgen.01.position-fb
+net motor.01.pos-fb => joint.1.motor-pos-fb
+
+setp hm2_5i24.0.stepgen.01.dirsetup        [JOINT_1]DIRSETUP
+setp hm2_5i24.0.stepgen.01.dirhold         [JOINT_1]DIRHOLD
+setp hm2_5i24.0.stepgen.01.steplen         [JOINT_1]STEPLEN
+setp hm2_5i24.0.stepgen.01.stepspace       [JOINT_1]STEPSPACE
+setp hm2_5i24.0.stepgen.01.position-scale  [JOINT_1]SCALE
+setp hm2_5i24.0.stepgen.01.maxvel          [JOINT_1]STEPGEN_MAX_VEL
+setp hm2_5i24.0.stepgen.01.maxaccel        [JOINT_1]STEPGEN_MAX_ACC
+setp hm2_5i24.0.stepgen.01.step_type       0
+
+# ################
+# Z [2] Axis
+# ################
+
+# axis enable chain
+newsig emcmot.02.enable bit
+sets emcmot.02.enable FALSE
+net emcmot.02.enable <= joint.2.amp-enable-out 
+net emcmot.02.enable => hm2_5i24.0.stepgen.02.enable
+
+# position command and feedback
+net emcmot.02.pos-cmd <= joint.2.motor-pos-cmd
+net emcmot.02.pos-cmd => hm2_5i24.0.stepgen.02.position-cmd
+
+net motor.02.pos-fb <= hm2_5i24.0.stepgen.02.position-fb
+net motor.02.pos-fb => joint.2.motor-pos-fb
+
+setp hm2_5i24.0.stepgen.02.dirsetup        [JOINT_2]DIRSETUP
+setp hm2_5i24.0.stepgen.02.dirhold         [JOINT_2]DIRHOLD
+setp hm2_5i24.0.stepgen.02.steplen         [JOINT_2]STEPLEN
+setp hm2_5i24.0.stepgen.02.stepspace       [JOINT_2]STEPSPACE
+setp hm2_5i24.0.stepgen.02.position-scale  [JOINT_2]SCALE
+setp hm2_5i24.0.stepgen.02.maxvel          [JOINT_2]STEPGEN_MAX_VEL
+setp hm2_5i24.0.stepgen.02.maxaccel        [JOINT_2]STEPGEN_MAX_ACC
+setp hm2_5i24.0.stepgen.02.step_type       0
+
+#######
+# a kind of loop to keep estop happy
+#  Overall, estop is not really used
+#  laser_handlers just does a lot of pausing
+
+net estop-loop iocontrol.0.user-enable-out iocontrol.0.emc-enable-in

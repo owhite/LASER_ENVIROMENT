@@ -1,0 +1,71 @@
+loadrt trivkins coordinates=xyz
+
+loadrt motmod base_period_nsec=[EMCMOT]BASE_PERIOD servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS num_dio=10
+loadrt hostmot2
+loadrt hm2_pci
+loadusr laser_handlers
+
+loadrt threads name1=card_thread period1=1000000
+
+loadusr -Wn bump pyvcp -c bump bump_test.xml ## loads the pyvcp
+
+loadrt not count=4
+addf not.0 servo-thread
+addf not.1 servo-thread
+addf not.2 servo-thread
+addf not.3 servo-thread
+
+loadrt or2 count=7
+addf or2.0 servo-thread
+addf or2.1 servo-thread
+addf or2.2 servo-thread
+addf or2.3 servo-thread
+addf or2.4 servo-thread
+addf or2.5 servo-thread
+addf or2.6 servo-thread
+
+loadrt and2 count=8
+addf and2.0 servo-thread
+addf and2.1 servo-thread
+addf and2.2 servo-thread
+addf and2.3 servo-thread
+addf and2.4 servo-thread
+addf and2.5 servo-thread
+addf and2.6 servo-thread
+addf and2.7 servo-thread
+
+loadrt debounce cfg=2
+addf debounce.0 servo-thread
+
+addf hm2_5i24.0.read  servo-thread
+addf hm2_5i24.0.write servo-thread
+
+# Set up PWMGen - PWM_INTERNAL
+setp hm2_5i24.0.pwmgen.00.output-type 1
+setp hm2_5i24.0.pwmgen.00.scale 100
+setp hm2_5i24.0.pwmgen.pwm_frequency 80
+
+setp hm2_5i24.0.gpio.053.is_output     true
+setp hm2_5i24.0.gpio.054.is_output     true
+setp hm2_5i24.0.gpio.055.is_output     true
+setp hm2_5i24.0.gpio.056.is_output     true
+
+setp hm2_5i24.0.gpio.053.out     false
+setp hm2_5i24.0.gpio.054.out     false
+setp hm2_5i24.0.gpio.055.out     false
+setp hm2_5i24.0.gpio.056.out     false
+
+net p1 hm2_5i24.0.gpio.053.out relay.bit1-out
+net p2 hm2_5i24.0.gpio.054.out relay.bit2-out
+net p3 hm2_5i24.0.gpio.055.out relay.bit3-out
+net p4 hm2_5i24.0.gpio.056.out relay.bit4-out
+
+#### REMOVE EVERYTHING BELOW HERE 
+# core HAL config file for simulation
+
+# first load all the RT modules that will be needed
+loadrt ddt names=ddt_x,ddt_xv,ddt_y,ddt_yv,ddt_z,ddt_zv
+# load additional blocks
+loadrt hypot names=vel_xy,vel_xyz
+
+# add motion controller functions to ser

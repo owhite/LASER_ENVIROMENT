@@ -1,0 +1,10 @@
+s/DirPin/DIR_PIN/g
+s/StepPin/STEP_PIN/g
+s/GeckoEnbl/GECKOENBL/g
+s/SpkrPin/SPKR_PIN/g
+s/PBPin/PB_PIN/g
+s/SWPin1/SW_PIN1/g
+s/SWPin2/SW_PIN2/g
+s/LCPin1/LC_PIN1/g
+s/LCPin2/LC_PIN2/g
+s/LCPin3/LC_PIN3/g

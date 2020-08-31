@@ -1,0 +1,23 @@
+<pyvcp>
+
+  <labelframe text="       bump test       ">
+    <font>("Helvetica",16)</font>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <button>
+	<font>("Helvetica",20)</font>
+	<width>3</width>
+	<halpin>"bump-enable"</halpin>
+	<text>"bump"</text>
+      </button>
+    </hbox>
+
+    <hbox>
+      <relief>RAISED</relief>
+      <bd>3</bd>
+      <checkbutton>
+	<halpin>"underflow"</halpin>
+	<text>"Flow"</text>
+      

@@ -1,0 +1,14 @@
+focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_Button" id="h_button_6">
+            <property name="label" translatable="yes">h_button_6</property>
+            <property name="width_request">56</property>
+    

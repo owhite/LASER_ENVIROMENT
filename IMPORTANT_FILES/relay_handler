@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+# input: an int = 0 - 15
+# output: set four bits based on the input
+
+import hal
+import sys
+import time
+
+def main():
+    input = 0
+
+    relay = hal.component("relay")
+
+    relay.newpin("relay-in", hal.HAL_U32, hal.HAL_IN)
+    relay.newpin("relay-bit1", hal.HAL_BIT, hal.HAL_OUT)
+    relay.newpin("relay-bit2", hal.HAL_BIT, hal.HAL_OUT)
+    relay.newpin("relay-bit3", hal.HAL_BIT, hal.HAL_OUT)
+    relay.newpin("relay-bit4", hal.HAL_BIT, hal.HAL_OUT)
+    relay.ready()
+
+    relay['relay-in'] = 0
+
+    try:
+        while 1:
+            input = relay['relay-in']
+            if input < 0: input = 0
+            if input > 15: input = 0
+
+            relay['relay-bit1'] = bool((input & 0b1000) >> 3)
+            relay['relay-bit2'] = bool((input & 0b0100) >> 2)
+            relay['relay-bit3'] = bool((input & 0b0010) >> 1)
+            relay['relay-bit4'] = bool(input & 0b0001)
+ 
+    except (KeyboardInterrupt,):
+        raise SystemExit, 0
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,47 @@
+#!/usr/bin/python
+
+# a hal component
+#
+# see http://linuxcnc.org/docs/html/hal_halmodule.html
+#
+# takes input between 0 and 99, makes sure it does not exceed
+#  values that the laser can receive
+
+import hal
+import sys
+import time
+
+def main():
+    input = 0
+
+    # can be invoked with an initial power setting
+
+    if len(sys.argv) > 1: input = int(sys.argv[1])
+    if input < 0: input = 0
+    if input > 99: input = 99
+
+    c = hal.component("laser_power")
+
+    c.newpin("power-in", hal.HAL_FLOAT, hal.HAL_IN)
+    c.newpin("power-out", hal.HAL_FLOAT, hal.HAL_OUT)
+    c.ready()
+
+    c['power-in'] = float(input)
+
+    # the laser power should not exceed 60% - its in the G100 docs
+    try:
+        while 1:
+            input = c['power-in']
+            if input < 1: input = 1
+            if input > 99: input = 99
+            # val = int(input * 60.0 / 100.0)
+            val = input * (60.0 / 100.0)
+            if val < 1: input = 1.0
+            if val > 60: input = 60.0
+            c['power-out'] = val
+
+    except (KeyboardInterrupt,):
+        raise SystemExit, 0
+
+if __name__ == '__main__':
+    main()

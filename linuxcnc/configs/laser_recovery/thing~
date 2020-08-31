@@ -1,0 +1,43 @@
+relay = hal.component("relay") # when you want to send something to relay - put the value on 'request'
+relay.newpin("request", hal.HAL_U32, hal.HAL_IN)
+relay.newpin("bit1-out", hal.HAL_BIT, hal.HAL_OUT)
+relay.newpin("bit2-out", hal.HAL_BIT, hal.HAL_OUT)
+relay.newpin("bit3-out", hal.HAL_BIT, hal.HAL_OUT)
+relay.newpin("bit4-out", hal.HAL_BIT, hal.HAL_OUT)
+
+relay.newpin("bit1-in", hal.HAL_BIT, hal.HAL_IN)
+relay.newpin("bit2-in", hal.HAL_BIT, hal.HAL_IN)
+relay.newpin("bit3-in", hal.HAL_BIT, hal.HAL_IN)
+relay.newpin("bit4-in", hal.HAL_BIT, hal.HAL_IN)
+relay.ready()
+
+# two other things are controlled by the RJ45s/GPIO connectors
+# of the custom PCB - the waterflow/temp board...
+water = hal.component("water")
+water.newpin("request", hal.HAL_U32, hal.HAL_IN)
+water.newpin("bit1-in", hal.HAL_BIT, hal.HAL_IN) # use to gather datax
+water.newpin("bit2-in", hal.HAL_BIT, hal.HAL_IN)
+water.newpin("bit3-in", hal.HAL_BIT, hal.HAL_IN)
+water.newpin("bit4-in", hal.HAL_BIT, hal.HAL_IN)
+
+water.newpin("bit1-out", hal.HAL_BIT, hal.HAL_OUT) # use to send data
+water.newpin("bit2-out", hal.HAL_BIT, hal.HAL_OUT)
+water.newpin("bit3-out", hal.HAL_BIT, hal.HAL_OUT)
+water.newpin("bit4-out", hal.HAL_BIT, hal.HAL_OUT)
+water.ready()
+water['request'] = 0
+
+# and the board that detects collisions of the optics
+optics = hal.component("optics")
+optics.newpin("request", hal.HAL_U32, hal.HAL_IN)
+optics.newpin("bit1-in", hal.HAL_BIT, hal.HAL_IN)
+optics.newpin("bit2-in", hal.HAL_BIT, hal.HAL_IN)
+optics.newpin("bit3-in", hal.HAL_BIT, hal.HAL_IN)
+optics.newpin("bit4-in", hal.HAL_BIT, hal.HAL_IN)
+optics.newpin("bit1-out", hal.HAL_BIT, hal.HAL_OUT)
+optics.newpin("bit2-out", hal.HAL_BIT, hal.HAL_OUT)
+optics.newpin("bit3-out", hal.HAL_BIT, hal.HAL_OUT)
+optics.newpin("bit4-out", hal.HAL_BIT, hal.HAL_OUT)
+optics.ready()
+optics['request'] = 0
+

@@ -1,0 +1,9 @@
+setp hm2_5i24.0.gpio.024.out false
+setp hm2_5i24.0.gpio.025.out false
+
+setp hm2_5i24.0.gpio.049.out false
+setp hm2_5i24.0.gpio.050.out false
+
+setp hm2_5i24.0.gpio.061.out false
+setp hm2_5i24.0.gpio.062.out false
+

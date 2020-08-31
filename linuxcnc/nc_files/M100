@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+
+import sys
+import os 
+
+power = int(float(sys.argv[1]))
+print power
+os.system("halcmd setp appliances.power_in %d" % power )
+
+sys.exit()

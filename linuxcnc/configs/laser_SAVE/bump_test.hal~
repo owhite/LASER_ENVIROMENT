@@ -1,0 +1,17 @@
+# a little tester for the stepper pins of the laser board
+# to launch:
+# $ halrun -U
+# $ halrun -I -f card_test.hal
+
+        ######   P1 CABLE  ######                     ######  P3 CABLE  ######
+loadrt hostmot2
+loadrt hm2_pci
+
+loadrt threads name1=card_thread period1=1000000
+loadrt conv_s32_u32 count=1 
+
+loadusr -Wn panel pyvcp -c panel card_test.xml ## loads the pyvcp
+
+addf hm2_5i24.0.read  card_thread
+addf hm2_5i24.0.write card_thread
+
