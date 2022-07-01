@@ -1,9 +1,3 @@
-# FEATURES TO ADD:
-#
-# change wood cuts to turn on air pump
-#
-# finish power setting based on engraving/cutting.
-
 import rhinoscriptsyntax as rs
 import ConfigParser as cp
 import StringIO
@@ -15,7 +9,9 @@ import math
 import os
 import sys
 import re
+import compas
 from math import sqrt
+from os.path import join as pjoin
 
 class CommandLineOptions:
     def __init__(self):
@@ -24,72 +20,67 @@ class CommandLineOptions:
 
         self.config = cp.ConfigParser()
 
-        if not rs.IsDocumentData():
-            problem = True
-        if len(rs.GetDocumentData(section='gcode', entry = 'material')) == 0:
-            problem = True
-
-        if problem:
-            result = rs.MessageBox ("No CNC information in document, load some?", buttons=1, title="CNC Information Missing")
-            if result != 1:
-                print "not loading .ini information, bailing"
-                return
-            else:
-                self.LoadIniFile()
-        else:
-            for section in rs.GetDocumentData(section=None, entry=None):
-                if not self.config.has_section(section):
-                    self.config.add_section(section)
-                for entry in rs.GetDocumentData(section=section):
-                    self.config.set(section, entry, rs.GetDocumentData(section=section, entry=entry))
-
-        if len(self.config.get('gcode', 'material')) == 0:
-            # we still have a problem
-            print "bad .ini file??"
-            self.status = False
+        if not self.ConfigIsOk():
+            self.result = False
             return
 
         if self.config.get('gcode', 'dont_write_file') == 'True':
             print "not writing output: dont write flag = True"
             return
 
-        from os.path import join as pjoin
-        path = self.config.get('gcode', 'ncfile_dir')
-        if not os.path.isdir(path):
-            t = "%s not around" % (path)
-            result = rs.MessageBox ("Attempt mount?", buttons=3, title=t)
-            if result:
-                # this will work if sudo chmod a+rw /Volumes
-                # and sudo chmod a+rw /Volumes/.
-                # then non-sudo user can mkdir /Volumes/nc_files
-                r_dir = "//guest@%s" % self.config.get('gcode', 'remote_dir')
-                print ("mount_smbfs " + r_dir + " " + path)
-                os.makedirs(path, 0755)
-                os.system("mount_smbfs " + r_dir + " " + path)
-                print "here"
-
-        path = self.config.get('gcode', 'ncfile_dir')
-        if not os.path.isdir(path):
-            rs.MessageBox("Cant find ncfile_dir = %s." % (path))
-            return
-
-        print "HERE PATH", path
-
-        self.output_file = pjoin(path, self.config.get('gcode', 'output_file'))
-
-        print self.output_file
-
-        # awesome, do we have destination directory? 
-        f = self.config.get('gcode', 'output_file')
-        try:
-            with open(self.output_file, 'wb') as the_file:
-                the_file.write("(nc file loading...)")
-            print 'wrote %s' % (self.output_file)
-        except IOError: 
-            rs.MessageBox("%s is not available :: 1" % self.output_file)
-            return
-
         self.status = True
+
+    def ConfigIsOk(self):
+        problem = False
+
+        # If the document doesnt have configuration data, throw some complaints
+        if not rs.IsDocumentData():
+            problem = True
+        type = rs.GetDocumentData(section='gcode', entry = 'material')
+        if type is None:
+            problem = True
+        else: # it's got data, try to load it
+            for section in rs.GetDocumentData(section=None, entry=None):
+                if not self.config.has_section(section):
+                    self.config.add_section(section)
+                for entry in rs.GetDocumentData(section=section):
+                    self.config.set(section, entry, rs.GetDocumentData(section=section, entry=entry))
+
+        # test if the config is happy
+        if not problem:
+            if self.ConfigParamsAreBroke():
+                problem = True
+
+        if problem:
+            result = rs.MessageBox ("No CNC information in document, load some?", buttons=1, title="CNC Information Missing")
+            if result != 1:
+                print "not loading .ini information, bailing"
+                return False
+            else:
+                self.LoadIniFile()
+
+        # run another test
+        if self.ConfigParamsAreBroke():
+            # we still have a problem
+            print "User supplied bad .ini file or document data has an issue"
+            return False
+
+        return True
+
+    def ConfigParamsAreBroke(self):
+        if not self.config.has_option('gcode', 'material'):
+            return True
+
+        if not self.config.has_option('gcode', 'output_file'):
+            return True
+        if not self.config.has_option('gcode', 'cut_part_flag'):
+            return True
+        if not self.config.has_option('gcode', 'showpaths'):
+            return True
+        if not self.config.has_option('gcode', 'dont_write_file'):
+            return True
+            
+        return False
 
     def LoadIniFile(self):
         # finds an ini file
@@ -107,18 +98,14 @@ class CommandLineOptions:
                     rs.SetDocumentData(s, key, entry)
         return 1
 
-    def GetOptions(self):
-        pass
-        return 
-
 class Toolpath: 
     def __init__(self, cfg=None):
         config = cfg
+        self.status = True
 
         self.verbose = 0
         self.gcode = ""
 
-        from os.path import join as pjoin
         output_file = config.get('gcode', 'output_file')
 
         self.end_point = self.SetEndPoint()
@@ -149,10 +136,27 @@ class Toolpath:
         self.backup_file_count = int(config.get('backup', 'backup_file_count'))
         self.backup_file_count -= 1
 
+        count = 0
+        parts = self.SetObjectType(rs.ObjectsByLayer(self.parts_layer), 'part')
+
+        # xxxx
+        objects = rs.SelectedObjects()  
+        count = 0
+        for object_id in objects:
+            layer = rs.ObjectLayer(object_id)
+            if rs.IsCurve(object_id) and layer == self.parts_layer:
+                count+=1
+
+        if count == 0:
+            print "no part was selected"
+            self.status = False
+            return
+
         for layer in (self.parts_layer, self.cuts_layer, self.path_layer, self.cutspath_layer):
             if (not rs.IsLayer(layer)):
                 rs.AddLayer(layer)
                 rs.LayerColor(layer, self.layer_colors[layer])
+
 
     def SetEndPoint(self):
         pt = (0,0,0);
@@ -218,10 +222,11 @@ class Toolpath:
             layer = rs.ObjectLayer(object_id)
             if rs.IsCurve(object_id) and layer == self.parts_layer:
                 count+=1
-        if count >= 0:
+
+        if count > 0:
             # this will export everything that is selected, including
             # things that are not cuts or paths
-            commandString = "-_Export " + path + " _Enter _Enter"
+            commandString = "!-_Export " + path + " _Enter _Enter"
             rs.Command(commandString)
     
 
@@ -525,7 +530,6 @@ class Toolpath:
             return list
 
         for line in lines:
-            # print "all v all: %d %d" % (len(rs.PolylineVertices(region)), len(rs.PolylineVertices(line)))
             success = True
             for pt in rs.PolylineVertices(line):
                 if not self.PointInRegion(pt, region):
@@ -918,7 +922,6 @@ class TSP:
                     copy[j:i]=reversed(self.current[j:i])
                     copy.reverse()
                 if copy != self.current: # no point returning the same tour
-                    # print 'copy %s' % (copy)
                     yield copy
 
     def FindLockedPoints(self):
@@ -1072,27 +1075,41 @@ class TSP:
 class Gcode:
     def __init__(self, cfg=None):
         config = cfg
+        self.config = config
 
         self.gcode_string = ""
 
         self.previous_power = '0'
 
-        self.dictionary_file = config.get('gcode', 'dictionary')
-        self.material = config.get('gcode', 'material')
-        self.move_feed_rate = int(config.get(self.material, 'move_feed_rate'))
-        self.cut_part_flag = False
-        self.dont_write_file = False
-        # allows user to group cuts inside a part, but not actually cut the part
-        if config.get('gcode', 'cut_part_flag') == 'True':
-            self.cut_part_flag = True
-        if config.get('gcode', 'dont_write_file') == 'True':
-            self.dont_write_file = True
         path = config.get('gcode', 'ncfile_dir')
 
-        from os.path import join as pjoin
-        self.output_file = pjoin(path, config.get('gcode', 'output_file'))
+        if not self.EstablishMount(path):
+            rs.MessageBox("Cant find ncfile_dir = %s." % (path))
+            self.status = False
+        else:
+            self.dictionary_file = config.get('gcode', 'dictionary')
+            self.material = config.get('gcode', 'material')
+            self.move_feed_rate = int(config.get(self.material, 'move_feed_rate'))
+            self.cut_part_flag = False
+            self.dont_write_file = False
+            # allows user to group cuts inside a part, but not actually cut the part
+            if config.get('gcode', 'cut_part_flag') == 'True':
+                self.cut_part_flag = True
+            if config.get('gcode', 'dont_write_file') == 'True':
+                self.dont_write_file = True
+            path = config.get('gcode', 'ncfile_dir')
+            self.output_file = pjoin(path, config.get('gcode', 'output_file'))
+            self.status = True
         
 
+    def EstablishMount(self, path):
+        config = self.config
+
+        if os.path.isdir(path):
+            self.output_file = pjoin(path, config.get('gcode', 'output_file'))
+            return True 
+        else:
+            return False
 
     def MakePhrase(self):
         try:
@@ -1151,8 +1168,6 @@ class Gcode:
         if (p != self.previous_power):
             self.Append('G4 P1\n')
         self.previous_power = p
-
-            
 
     def GetFeedRate(self, part_type):
         material =  rs.GetDocumentData(section='gcode', entry = 'material')
@@ -1219,12 +1234,22 @@ class Gcode:
         self.Append('M101 P11 (GAS LINE OFF)\n')
 
     def AddHeader(self):
+        units = rs.UnitSystem()
+        if (units == 2):
+            first_str = 'G17 G21 G40 G49 G80 G90\n'
+            print "gcode G21, millimeters"
+        elif (units == 8):
+            first_str = 'G17 G20 G40 G49 G80 G90\n'
+            print "gcode G20, inches"
+        else:
+            print "pick either inches or mm units"
 
         # this is where you'd change settings for air pump
         # print "got: " , self.material
 
-        header = ('G17 G20 G40 G49 G80 G90\n'
-                  'G92 X%0.4lf Y%0.4lf (SET CURRENT POSITION)\n'
+        self.Append(first_str)
+
+        header = ('G92 X%0.4lf Y%0.4lf (SET CURRENT POSITION)\n'
                   'G64 P0.005 (Continuous mode with path tolerance)\n\n'
                   'M101 P04 (VENTILATION ON)\n'
                   'M101 P11 (GAS LINE OFF)\n' 
@@ -1260,27 +1285,32 @@ class Gcode:
 
 if __name__ == '__main__':
     cl = CommandLineOptions()
-    g = Gcode(cfg = cl.config)
-    tp=Toolpath(cfg = cl.config)
-    g.end_point = tp.end_point
-    g.G92_point = tp.G92_point
 
-    struct = tp.FindToolpath(True)
+    if cl.status:
+        g = Gcode(cfg = cl.config)
 
-    if struct:
-        if tp.showpaths: tp.ShowPaths(struct)
-        p = g.MakePhrase()
+        if g.status:
+            tp=Toolpath(cfg = cl.config)
 
-        title = '(' + p + ')' + '\n'
-        g.Append(title)
-        g.AddHeader()
+            if tp.status:
+                g.end_point = tp.end_point
+                g.G92_point = tp.G92_point
+                cut_groups = tp.FindToolpath(True)
 
-        for part in struct['parts']:
-            cuts = struct[part]['cuts']
-            for cut in cuts:
-                g.WritePolyline(cut)
-            if g.cut_part_flag: g.WritePolyline(part)
+                if cut_groups:
+                    if tp.showpaths: tp.ShowPaths(cut_groups)
+                    p = g.MakePhrase()
 
-        g.AddFooter()
-        g.WriteGcode()
-        tp.FlushObjects()
+                    title = '(' + p + ')' + '\n'
+                    g.Append(title)
+                    g.AddHeader()
+
+                    for part in cut_groups['parts']:
+                        cuts = cut_groups[part]['cuts']
+                        for cut in cuts:
+                            g.WritePolyline(cut)
+                        if g.cut_part_flag: g.WritePolyline(part)
+
+                    g.AddFooter()
+                    g.WriteGcode()
+                    tp.FlushObjects()
