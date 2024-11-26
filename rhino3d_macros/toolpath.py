@@ -9,7 +9,6 @@ import math
 import os
 import sys
 import re
-import compas
 from math import sqrt
 from os.path import join as pjoin
 
